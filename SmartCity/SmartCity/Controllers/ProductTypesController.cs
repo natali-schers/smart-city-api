@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartCity.Models;
+using SmartCity.Services;
 
 namespace SmartCity.Controllers
 {
@@ -7,17 +8,17 @@ namespace SmartCity.Controllers
     [Route("api/[controller]")]
     public class ProductTypesController : Controller
     {
-        private readonly ProductTypeDAL _productTypeDAL;
+        private readonly ProductTypeService _productTypeService;
 
         public ProductTypesController()
         {
-            _productTypeDAL = new ProductTypeDAL();
+            _productTypeService = new ProductTypeService();
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var productTypes = _productTypeDAL.GetAll();
+            var productTypes = _productTypeService.GetAll();
 
             return Ok(productTypes);
         }
@@ -25,7 +26,7 @@ namespace SmartCity.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var productType = _productTypeDAL.GetById(id);
+            var productType = _productTypeService.GetById(id);
 
             return Ok(productType);
         }
@@ -33,7 +34,7 @@ namespace SmartCity.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] CreateProductTypeDto productType)
         {
-            _productTypeDAL.Create(productType);
+            _productTypeService.Create(productType);
 
             return Ok();
         }
@@ -41,7 +42,7 @@ namespace SmartCity.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] UpdateProductTypeDto productType)
         {
-            _productTypeDAL.Update(id, productType);
+            _productTypeService.Update(id, productType);
 
             return Ok();
         }
@@ -49,7 +50,7 @@ namespace SmartCity.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _productTypeDAL.Delete(id);
+            _productTypeService.Delete(id);
 
             return Ok();
         }

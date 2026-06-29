@@ -33,7 +33,7 @@ public class ProductDAL
                     product.ProductName = reader["ProductName"].ToString() ?? "";
                     product.Characteristics = reader["Characteristics"].ToString() ?? "";
                     product.AveragePrice = Convert.ToDecimal(reader["AveragePrice"]);
-                    product.IsActive = reader["IsActive"].Equals("1");
+                    product.IsActive = Convert.ToBoolean(reader["IsActive"]);
                     product.LogoUrl = reader["LogoUrl"].ToString() ?? "";
                     product.ProductTypeId = Convert.ToInt32(reader["ProductTypeId"]);
 
@@ -77,7 +77,7 @@ public class ProductDAL
                     product.ProductName = reader["ProductName"].ToString() ?? "";
                     product.Characteristics = reader["Characteristics"].ToString() ?? "";
                     product.AveragePrice = Convert.ToDecimal(reader["AveragePrice"]);
-                    product.IsActive = reader["IsActive"].Equals("1");
+                    product.IsActive = Convert.ToBoolean(reader["IsActive"]);
                     product.LogoUrl = reader["LogoUrl"].ToString() ?? ""; 
                     product.ProductTypeId = Convert.ToInt32(reader["ProductTypeId"]);
                 }

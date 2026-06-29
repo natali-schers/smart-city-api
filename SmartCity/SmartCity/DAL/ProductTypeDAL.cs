@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 using SmartCity.Models;
 
 public class ProductTypeDAL
@@ -8,9 +10,9 @@ public class ProductTypeDAL
                                                .AddJsonFile("appsettings.json")
                                                .Build().GetConnectionString("SmartCity");
 
-    public IList<GetProductTypeDto> GetAll()
+    public IList<ProductType> GetAll()
     {
-        IList<GetProductTypeDto> productTypes = new List<GetProductTypeDto>();
+        IList<ProductType> productTypes = new List<ProductType>();
 
         try
         {
@@ -26,10 +28,10 @@ public class ProductTypeDAL
 
                 while (reader.Read())
                 {
-                    GetProductTypeDto type = new GetProductTypeDto();
+                    ProductType type = new ProductType();
                     type.Id = Convert.ToInt32(reader["Id"]);
                     type.Description = reader["Description"].ToString() ?? "";
-                    type.IsCommercialized = reader["IsCommercialized"].Equals("1");
+                    type.IsCommercialized = Convert.ToBoolean(reader["IsCommercialized"]);
 
                     productTypes.Add(type);
                 }
@@ -45,9 +47,9 @@ public class ProductTypeDAL
         return productTypes;
     }
 
-    public GetProductTypeDto GetById(int id)
+    public ProductType GetById(int id)
     {
-        GetProductTypeDto productType = new GetProductTypeDto();
+        ProductType productType = new ProductType();
 
         try
         {
@@ -69,34 +71,9 @@ public class ProductTypeDAL
                 {
                     productType.Id = Convert.ToInt32(reader["Id"]);
                     productType.Description = reader["Description"].ToString() ?? "";
-                    productType.IsCommercialized = reader["IsCommercialized"].Equals("1");
+                    productType.IsCommercialized = Convert.ToBoolean(reader["IsCommercialized"]);
                 }
-            }
-        }
-        catch (Exception)
-        {
 
-            throw;
-        }
-
-        return productType;
-    }
-
-    public void Create(CreateProductTypeDto productType)
-    {
-        try
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                string query = @"INSERT INTO ProductType ([Description], IsCommercialized) VALUES (@Description, @IsCommercialized);";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Parameters.AddWithValue("Description", productType.Description);
-                command.Parameters.AddWithValue("IsCommercialized", productType.IsCommercialized);
-
-                connection.Open();
-                command.ExecuteNonQuery();
                 connection.Close();
             }
         }
@@ -104,20 +81,58 @@ public class ProductTypeDAL
         {
             throw;
         }
+
+        return productType;
     }
 
-    public void Update(int id, UpdateProductTypeDto productType)
+    public ProductType Create(ProductType productType)
     {
         try
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = @"UPDATE ProductType SET [Description] = @Description, IsCommercialized = @IsCommercialized WHERE Id = @Id;";
+                string query = @"
+                    INSERT INTO ProductType ([Description], IsCommercialized)
+                    VALUES (@Description, @IsCommercialized);
+                    SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("Description", productType.Description ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("IsCommercialized", productType.IsCommercialized);
+
+                connection.Open();
+
+                productType.Id = (int)command.ExecuteScalar();
+
+                connection.Close();
+
+                return productType;
+
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public void Update(int id, ProductType productType)
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = @"
+                    UPDATE ProductType
+                    SET [Description] = @Description,
+                        IsCommercialized = @IsCommercialized
+                    WHERE Id = @Id;";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Parameters.AddWithValue("Id", id);
-                command.Parameters.AddWithValue("Description", productType.Description);
+                command.Parameters.AddWithValue("Description", productType.Description ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("IsCommercialized", productType.IsCommercialized);
 
                 connection.Open();
