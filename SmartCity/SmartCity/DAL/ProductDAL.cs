@@ -9,9 +9,9 @@ public class ProductDAL
                                                .AddJsonFile("appsettings.json")
                                                .Build().GetConnectionString("SmartCity");
 
-    public IList<Product> GetAll()
+    public IList<GetProductDto> GetAll()
     {
-        IList<Product> products = new List<Product>();
+        IList<GetProductDto> products = new List<GetProductDto>();
 
         try
         {
@@ -27,7 +27,7 @@ public class ProductDAL
 
                 while (reader.Read())
                 {
-                    Product product = new Product();
+                    GetProductDto product = new GetProductDto();
 
                     product.Id = Convert.ToInt32(reader["Id"]);
                     product.ProductName = reader["ProductName"].ToString() ?? "";
@@ -51,9 +51,9 @@ public class ProductDAL
         return products;
     }
 
-    public Product GetById(int id)
+    public GetProductDto GetById(int id)
     {
-        Product product = new Product();
+        GetProductDto product = new GetProductDto();
 
         try
         {
@@ -91,7 +91,7 @@ public class ProductDAL
         return product;
     }
 
-    public void Create(Product product)
+    public void Create(CreateProductDto product)
     {
         try
         {
@@ -113,10 +113,6 @@ public class ProductDAL
 
                 connection.Open();
                 var result = command.ExecuteScalar();
-                if (result != null && int.TryParse(result.ToString(), out int newId))
-                {
-                    product.Id = newId;
-                }
                 connection.Close();
             }
         }
@@ -126,7 +122,7 @@ public class ProductDAL
         }
     }
 
-    public void Update(Product product)
+    public void Update(int id, UpdateProductDto product)
     {
         try
         {
@@ -144,7 +140,7 @@ public class ProductDAL
 
                 SqlCommand command = new SqlCommand(query, connection);
 
-                command.Parameters.AddWithValue("Id", product.Id);
+                command.Parameters.AddWithValue("Id", id);
                 command.Parameters.AddWithValue("ProductName", product.ProductName ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("Characteristics", product.Characteristics ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("AveragePrice", product.AveragePrice.HasValue ? (object)product.AveragePrice.Value : DBNull.Value);

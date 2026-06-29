@@ -34,17 +34,17 @@ namespace SmartCity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Product product)
+        public IActionResult Create([FromBody] CreateProductDto product)
         {
             _productDAL.Create(product);
 
             return Ok(product);
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] Product product)
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] UpdateProductDto product)
         {
-            _productDAL.Update(product);
+            _productDAL.Update(id, product);
 
             return Ok();
         }
