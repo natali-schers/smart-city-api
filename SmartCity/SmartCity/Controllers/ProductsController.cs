@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartCity.Models;
 
 namespace SmartCity.Controllers
 {
@@ -13,13 +14,47 @@ namespace SmartCity.Controllers
             _productDAL = new ProductDAL();
         }
 
-        // GET: api/Product
         [HttpGet]
         public IActionResult GetAll()
         {
             var products = _productDAL.GetAll();
 
             return Ok(products);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {   
+            var product = _productDAL.GetById(id);
+
+            if (product == null)
+                return NotFound();
+
+            return Ok(product);
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] Product product)
+        {
+            _productDAL.Create(product);
+
+            return Ok(product);
+        }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] Product product)
+        {
+            _productDAL.Update(product);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            _productDAL.Delete(id);
+
+            return Ok();
         }
     }
 }
