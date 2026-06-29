@@ -8,9 +8,9 @@ public class ProductTypeDAL
                                                .AddJsonFile("appsettings.json")
                                                .Build().GetConnectionString("SmartCity");
 
-    public IList<ProductType> GetAll()
+    public IList<GetProductTypeDto> GetAll()
     {
-        IList<ProductType> productTypes = new List<ProductType>();
+        IList<GetProductTypeDto> productTypes = new List<GetProductTypeDto>();
 
         try
         {
@@ -26,7 +26,7 @@ public class ProductTypeDAL
 
                 while (reader.Read())
                 {
-                    ProductType type = new ProductType();
+                    GetProductTypeDto type = new GetProductTypeDto();
                     type.Id = Convert.ToInt32(reader["Id"]);
                     type.Description = reader["Description"].ToString() ?? "";
                     type.IsCommercialized = reader["IsCommercialized"].Equals("1");
@@ -45,9 +45,9 @@ public class ProductTypeDAL
         return productTypes;
     }
 
-    public ProductType GetById(int id)
+    public GetProductTypeDto GetById(int id)
     {
-        ProductType productType = new ProductType();
+        GetProductTypeDto productType = new GetProductTypeDto();
 
         try
         {
@@ -82,7 +82,7 @@ public class ProductTypeDAL
         return productType;
     }
 
-    public void Create(ProductType productType)
+    public void Create(CreateProductTypeDto productType)
     {
         try
         {
@@ -106,7 +106,7 @@ public class ProductTypeDAL
         }
     }
 
-    public void Update(ProductType productType)
+    public void Update(int id, UpdateProductTypeDto productType)
     {
         try
         {
@@ -116,7 +116,7 @@ public class ProductTypeDAL
 
                 SqlCommand command = new SqlCommand(query, connection);
 
-                command.Parameters.AddWithValue("Id", productType.Id);
+                command.Parameters.AddWithValue("Id", id);
                 command.Parameters.AddWithValue("Description", productType.Description);
                 command.Parameters.AddWithValue("IsCommercialized", productType.IsCommercialized);
 
