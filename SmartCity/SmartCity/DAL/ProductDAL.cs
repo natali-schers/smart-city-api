@@ -9,9 +9,9 @@ public class ProductDAL
                                                .AddJsonFile("appsettings.json")
                                                .Build().GetConnectionString("SmartCity");
 
-    public IList<GetProductDto> GetAll()
+    public IList<Product> GetAll()
     {
-        IList<GetProductDto> products = new List<GetProductDto>();
+        IList<Product> products = new List<Product>();
 
         try
         {
@@ -27,7 +27,7 @@ public class ProductDAL
 
                 while (reader.Read())
                 {
-                    GetProductDto product = new GetProductDto();
+                    Product product = new Product();
 
                     product.Id = Convert.ToInt32(reader["Id"]);
                     product.ProductName = reader["ProductName"].ToString() ?? "";
@@ -51,9 +51,9 @@ public class ProductDAL
         return products;
     }
 
-    public GetProductDto GetById(int id)
+    public Product GetById(int id)
     {
-        GetProductDto product = new GetProductDto();
+        Product product = new Product();
 
         try
         {
@@ -78,7 +78,8 @@ public class ProductDAL
                     product.Characteristics = reader["Characteristics"].ToString() ?? "";
                     product.AveragePrice = Convert.ToDecimal(reader["AveragePrice"]);
                     product.IsActive = reader["IsActive"].Equals("1");
-                    product.LogoUrl = reader["LogoUrl"].ToString() ?? "";
+                    product.LogoUrl = reader["LogoUrl"].ToString() ?? ""; 
+                    product.ProductTypeId = Convert.ToInt32(reader["ProductTypeId"]);
                 }
             }
         }
@@ -91,7 +92,7 @@ public class ProductDAL
         return product;
     }
 
-    public void Create(CreateProductDto product)
+    public Product Create(Product product)
     {
         try
         {
@@ -112,8 +113,13 @@ public class ProductDAL
                 command.Parameters.AddWithValue("ProductTypeId", product.ProductTypeId);
 
                 connection.Open();
-                var result = command.ExecuteScalar();
+
+                product.Id = (int)command.ExecuteScalar();
+
                 connection.Close();
+
+                return product;
+
             }
         }
         catch (Exception)
@@ -122,7 +128,7 @@ public class ProductDAL
         }
     }
 
-    public void Update(int id, UpdateProductDto product)
+    public void Update(int id, Product product)
     {
         try
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartCity.Models;
+using SmartCity.Services;
 
 namespace SmartCity.Controllers
 {
@@ -7,17 +8,17 @@ namespace SmartCity.Controllers
     [Route("api/[controller]")]
     public class ProductsController : Controller
     {
-        private readonly ProductDAL _productDAL;
+        private readonly ProductService _productService;
 
         public ProductsController()
         {
-            _productDAL = new ProductDAL();
+            _productService = new ProductService();
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var products = _productDAL.GetAll();
+            var products = _productService.GetAll();
 
             return Ok(products);
         }
@@ -25,7 +26,7 @@ namespace SmartCity.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {   
-            var product = _productDAL.GetById(id);
+            var product = _productService.GetById(id);
 
             if (product == null)
                 return NotFound();
@@ -36,15 +37,15 @@ namespace SmartCity.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] CreateProductDto product)
         {
-            _productDAL.Create(product);
+            var createProduct = _productService.Create(product);
 
-            return Ok(product);
+            return Ok(createProduct);
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] UpdateProductDto product)
         {
-            _productDAL.Update(id, product);
+            _productService.Update(id, product);
 
             return Ok();
         }
@@ -52,7 +53,7 @@ namespace SmartCity.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _productDAL.Delete(id);
+            _productService.Delete(id);
 
             return Ok();
         }
