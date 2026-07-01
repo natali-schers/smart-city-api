@@ -8,11 +8,11 @@ namespace SmartCity.Controllers
     [Route("api/[controller]")]
     public class ProductsController : Controller
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
 
-        public ProductsController()
+        public ProductsController(IProductService productService)
         {
-            _productService = new ProductService();
+            _productService = productService;
         }
 
         [HttpGet]

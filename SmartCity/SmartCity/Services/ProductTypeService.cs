@@ -1,21 +1,19 @@
 ﻿using SmartCity.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SmartCity.Services
 {
-    public class ProductTypeService
+    public class ProductTypeService : IProductTypeService
     {
-        private readonly ProductTypeDAL _productTypeDAL;
+        private readonly IProductTypeRepository _productTypeRepository;
 
-        public ProductTypeService()
+        public ProductTypeService(IProductTypeRepository productTypeRepository)
         {
-            _productTypeDAL = new ProductTypeDAL();
+            _productTypeRepository = productTypeRepository;
         }
 
         public IList<GetProductTypeDto> GetAll()
         {
-            IList<ProductType> types = _productTypeDAL.GetAll();
+            IList<ProductType> types = _productTypeRepository.GetAll();
 
             return types.Select(t => new GetProductTypeDto
             {
@@ -27,7 +25,7 @@ namespace SmartCity.Services
 
         public GetProductTypeDto GetById(int id)
         {
-            ProductType t = _productTypeDAL.GetById(id);
+            ProductType t = _productTypeRepository.GetById(id);
 
             return new GetProductTypeDto
             {
@@ -45,7 +43,7 @@ namespace SmartCity.Services
                 IsCommercialized = productTypeDto.IsCommercialized
             };
 
-            return _productTypeDAL.Create(productType);
+            return _productTypeRepository.Create(productType);
         }
 
         public void Update(int id, UpdateProductTypeDto productTypeDto)
@@ -56,12 +54,12 @@ namespace SmartCity.Services
                 IsCommercialized = productTypeDto.IsCommercialized
             };
 
-            _productTypeDAL.Update(id, productType);
+            _productTypeRepository.Update(id, productType);
         }
 
         public void Delete(int id)
         {
-            _productTypeDAL.Delete(id);
+            _productTypeRepository.Delete(id);
         }
     }
 }
