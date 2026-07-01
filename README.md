@@ -83,8 +83,8 @@ smart-city/
 - [x] Criação do banco de dados
 - [x] Criação dos Models e DTOs para requisições da API
 - [x] Implementação dos endpoints (GetAll, GetById, Create, Update, Delete) para gerenciar produtos e tipos de produto
-- [ ] Implementação do Entity Framework
-- [ ] Criação de interfaces para as services e repositories
+- [x] Implementação do Entity Framework
+- [x] Criação de interfaces para as services e repositories
 - [ ] Adicionar try/catch e melhorar retornos de erro
 - [ ] Criação de testes unitários
 - [ ] Configuração do CI/CD
